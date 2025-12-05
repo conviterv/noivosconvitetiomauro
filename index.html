@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Casamento Ronaldo & Vitória</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Great+Vibes&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS (via CDN para estilização rápida e moderna) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- FontAwesome para ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --gold: #D4AF37;
+            --soft-white: #F9F9F9;
+            --deep-green: #2C3E50;
+            --overlay-dark: rgba(0, 0, 0, 0.4);
+            --glass: rgba(255, 255, 255, 0.85);
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden; /* Controlado pelo JS inicialmente */
+            font-family: 'Cormorant Garamond', serif;
+            background-color: var(--soft-white);
+            scroll-behavior: smooth;
+        }
+
+        /* Tipografia Personalizada */
+        .font-script {
+            font-family: 'Great Vibes', cursive;
+        }
+        .font-body {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        /* --- ANIMAÇÃO DE ENVELOPE (Abertura) --- */
+        #envelope-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #fdfbf7;
+            z-index: 50;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            transition: transform 1.5s cubic-bezier(0.86, 0, 0.07, 1), opacity 1s ease;
+        }
+
+        .wax-seal {
+            width: 80px;
+            height: 80px;
+            background: #C5A059;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            cursor: pointer;
+            border: 4px solid #e0c076;
+            animation: pulse-gold 2s infinite;
+            position: relative;
+            z-index: 52;
+        }
+
+        .wax-seal i {
+            color: #5a4215;
+            font-size: 2rem;
+        }
+
+        @keyframes pulse-gold {
+            0% { box-shadow: 0 0 0 0 rgba(197, 160, 89, 0.7); transform: scale(1); }
+            70% { box-shadow: 0 0 0 15px rgba(197, 160, 89, 0); transform: scale(1.05); }
+            100% { box-shadow: 0 0 0 0 rgba(197, 160, 89, 0); transform: scale(1); }
+        }
+
+        .envelope-text {
+            margin-top: 20px;
+            color: #5a4215;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            opacity: 0.8;
+            animation: fadeIn 2s ease-in-out;
+        }
+
+        /* Classe para esconder o envelope ao abrir */
+        .envelope-open {
+            transform: translateY(-100%);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* --- ESTRUTURA DE PÁGINAS (Scroll Snap) --- */
+        .main-container {
+            height: 100dvh; /* Dynamic Viewport Height para mobile */
+            width: 100%;
+            overflow-y: scroll;
+            scroll-snap-type: y mandatory;
+            display: none; /* Escondido até abrir o envelope */
+        }
+
+        .page-section {
+            height: 100dvh;
+            width: 100%;
+            scroll-snap-align: start;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            background-position: center;
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
+
+        /* Vidro Fosco (Glassmorphism) para Textos */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            padding: 2rem;
+            border-radius: 4px; /* Bordas levemente arredondadas, mais clássico */
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+            max-width: 85%;
+            text-align: center;
+            position: relative;
+            z-index: 10;
+            animation: slideUp 1s ease-out both;
+            animation-delay: 0.3s;
+        }
+
+        /* Detalhe Dourado nas bordas do card */
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            border: 1px solid #D4AF37;
+            pointer-events: none;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Botão Personalizado */
+        .btn-gold {
+            background: linear-gradient(135deg, #D4AF37 0%, #C5A059 100%);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 50px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 15px;
+            border: none;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .btn-gold:active {
+            transform: scale(0.95);
+        }
+
+        /* Indicador de Scroll */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            animation: bounce 2s infinite;
+            z-index: 20;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            opacity: 0.8;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateX(-50%) translateY(0);}
+            40% {transform: translateX(-50%) translateY(-10px);}
+            60% {transform: translateX(-50%) translateY(-5px);}
+        }
+
+        /* Media Queries para ajustes finos em mobile */
+        @media (max-width: 380px) {
+            .glass-card { padding: 1.5rem 1rem; }
+            h1 { font-size: 2.5rem !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 1. ENVELOPE VIRTUAL (Tela Inicial) -->
+    <div id="envelope-overlay">
+        <div class="wax-seal" onclick="abrirConvite()">
+            <i class="fa-solid fa-heart"></i>
+        </div>
+        <div class="envelope-text">Toque no selo para abrir</div>
+        <div style="margin-top: 10px; font-family: 'Great Vibes'; font-size: 2rem; color: #D4AF37;">R & V</div>
+    </div>
+
+    <!-- 2. CONTEÚDO PRINCIPAL (Scroll Snap) -->
+    <div class="main-container" id="main-content">
+        
+        <!-- PÁGINA 1: Anúncio e Versículo -->
+        <!-- Imagem Landscape 1 -->
+        <section class="page-section" style="background-image: url('https://lh3.googleusercontent.com/pw/AP1GczPtHo3JyrXxWKPUVJ-tEoHp8wY8Ub-L2VmknJV5snz_1rJA-HUJpdS1i9-AuqsbZxYxR1Cx7d295_ATR4rhmCR1BgVX8ke2DFQj9bZ0NptXk7O13evHuC9sqAVYe1vXACZF5H5KW_8sXcRnb9iHlwVYZg=w576-h288-s-no-gm?authuser=0');">
+            <div style="position:absolute; width:100%; height:100%; background: rgba(0,0,0,0.2);"></div>
+            
+            <div class="glass-card">
+                <p class="font-body text-xs tracking-widest uppercase mb-2 text-gray-600">Vamos nos casar!</p>
+                <h1 class="font-script text-5xl md:text-6xl text-[#D4AF37] mb-4" style="line-height: 1.2;">Ronaldo & Vitória</h1>
+                
+                <div class="w-16 h-px bg-[#D4AF37] mx-auto my-4"></div>
+                
+                <p class="italic text-gray-700 text-lg leading-relaxed">
+                    "Assim, eles já não são dois, mas sim uma só carne. Portanto, o que Deus uniu, ninguém separe."
+                </p>
+                <p class="text-sm mt-2 font-bold text-gray-500 uppercase">Mateus 19:6</p>
+            </div>
+            
+            <div class="scroll-indicator">Deslize para ver <i class="fa-solid fa-chevron-down ml-1"></i></div>
+        </section>
+
+        <!-- PÁGINA 2: Família -->
+        <!-- Imagem Portrait (Couple) -->
+        <section class="page-section" style="background-image: url('https://lh3.googleusercontent.com/pw/AP1GczP3yGp90Lmm3g8LXt8oI43gCt2gCMzQluIjP-vBaQUh-_6UTbC0_JkHXqWnqgqcBHMskHmSspwJwoASzv0E4FNxifW4L-uyUc6QriyLV9sXSu91jdkfkmtTApaB4rOf2to_noOcePz7ujvECs-B0Mf7zw=w399-h501-s-no-gm?authuser=0'); background-position: center top;">
+             <div style="position:absolute; width:100%; height:100%; background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);"></div>
+
+            <div class="glass-card" style="margin-top: 15vh; background: rgba(255,255,255,0.92);">
+                <p class="font-body text-xs tracking-widest text-gray-500 mb-4">COM A BÊNÇÃO DE DEUS E DE SEUS PAIS</p>
+                
+                <div class="mb-4">
+                    <p class="text-sm font-bold text-gray-700 uppercase mb-1">Pais do Noivo</p>
+                    <p class="font-script text-2xl text-[#C5A059]">Natividade Pereira de Araújo</p>
+                    <p class="font-script text-2xl text-[#C5A059]">& Maria Barros de Araújo</p>
+                </div>
+
+                <div class="mb-4">
+                    <p class="text-sm font-bold text-gray-700 uppercase mb-1">Pais da Noiva</p>
+                    <p class="font-script text-2xl text-[#C5A059]">Reilson Barbosa Santos</p>
+                    <p class="font-script text-2xl text-[#C5A059]">& Vânia Nunes de Araújo Pereira</p>
+                </div>
+
+                <div class="w-10 h-px bg-gray-300 mx-auto my-4"></div>
+
+                <p class="text-gray-700 leading-snug">
+                    Temos a honra e a imensa alegria de anunciar que nossos filhos, 
+                    <span class="font-script text-xl text-[#D4AF37]">Ronaldo & Vitória</span>, 
+                    se unirão em sagrado matrimônio.
+                </p>
+            </div>
+            <div class="scroll-indicator">Deslize <i class="fa-solid fa-chevron-down ml-1"></i></div>
+        </section>
+
+        <!-- PÁGINA 3: Convite Oficial -->
+        <!-- Imagem Portrait (Couple 2) -->
+        <section class="page-section" style="background-image: url('https://lh3.googleusercontent.com/pw/AP1GczMBzyoMj0XWB-7TRXDVE3RGDxgV3NxJp8Tmedvc9BZ3LxpHRBfZGV5xFJfsYEtm-gnie3gmWT-a0WEL50qWmmZ8Z1CS-x_J623b3JvZEydnW5QoYyPG6DAfmSG3aVrDxFhykIrPyfq45NisfvGOfyvRKw=w399-h599-s-no-gm?authuser=0'); background-position: center;">
+            <div style="position:absolute; width:100%; height:100%; background: rgba(44, 62, 80, 0.4);"></div>
+
+            <div class="glass-card" style="background: rgba(255, 255, 255, 0.95);">
+                <h2 class="font-script text-4xl text-[#D4AF37] mb-2">Convite Especial</h2>
+                <div class="w-full h-px bg-gray-200 mb-4"></div>
+                
+                <p class="text-gray-700 mb-4">
+                    Os noivos, juntamente com seus pais, têm a honra de convidar
+                </p>
+
+                <!-- Nome do Convidado em Destaque -->
+                <div class="py-3 px-1 border-t border-b border-[#D4AF37] mb-4">
+                    <p class="font-serif text-2xl font-bold text-[#2C3E50]">Tio Mauro</p>
+                </div>
+
+                <p class="text-gray-600 text-sm leading-relaxed">
+                    Para testemunharem o início da nossa nova vida juntos. Sua presença tornará este dia ainda mais inesquecível e abençoado.
+                </p>
+            </div>
+            <div class="scroll-indicator">Detalhes <i class="fa-solid fa-chevron-down ml-1"></i></div>
+        </section>
+
+        <!-- PÁGINA 4: Aceite e Link -->
+        <!-- Imagem Landscape 2 -->
+        <section class="page-section" style="background-image: url('https://lh3.googleusercontent.com/pw/AP1GczOun2C7zVGJG3IewR_UuI6nopWHV7lkqWyA1qSp6vHjFxoyocOmusMlYc3A6HLZmb31b4GccBg72BfewXONDLETs756lOqI-ygvHYy_4s7L2MEWTIkE6lSHx8hjm4jrd1LZhfE6_ZLkmYLtIUu8Becp5g=w547-h365-s-no-gm?authuser=0');">
+            <div style="position:absolute; width:100%; height:100%; background: rgba(0,0,0,0.5);"></div>
+
+            <div class="glass-card">
+                <i class="fa-brands fa-whatsapp text-4xl text-[#25D366] mb-3"></i>
+                <h2 class="font-serif text-2xl font-bold text-gray-800 mb-2">Aceitar Convite</h2>
+                
+                <p class="text-gray-600 text-sm mb-6 leading-relaxed">
+                    Por favor, clique no botão abaixo para abrir seu WhatsApp e selecionar o contato (Noivo ou Noiva) para enviar a mensagem de aceite.
+                </p>
+
+                <a href="#" id="whatsappLink" target="_blank" class="btn-gold">
+                    <i class="fa-regular fa-paper-plane mr-2"></i> Enviar Mensagem
+                </a>
+
+                <div class="mt-8 p-3 bg-[#fdfbf7] rounded border border-[#e0c076]">
+                    <p class="font-body text-xs font-bold text-[#D4AF37] uppercase mb-1">
+                        <i class="fa-solid fa-circle-info mr-1"></i> Próximos Passos
+                    </p>
+                    <p class="text-xs text-gray-600 leading-normal">
+                        Após o aceite, enviaremos em breve o <strong>Manual dos Convidados</strong> contendo data, horário, local (igreja), lista de presentes e outras informações importantes. A confirmação oficial de presença será feita posteriormente.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <script>
+        // Função para Abrir o Envelope
+        function abrirConvite() {
+            const overlay = document.getElementById('envelope-overlay');
+            const mainContent = document.getElementById('main-content');
+            
+            // Adiciona classe para animar saída
+            overlay.classList.add('envelope-open');
+            
+            // Mostra o conteúdo
+            mainContent.style.display = 'block';
+            
+            // Pequeno delay para garantir que o display block foi processado antes da rolagem
+            setTimeout(() => {
+                window.scrollTo(0, 0);
+            }, 100);
+        }
+
+        // Construção do Link do WhatsApp
+        document.addEventListener("DOMContentLoaded", function() {
+            const mensagem = `Queridos Noivos,%0A%0ARecebemos com grande alegria e honra o convite para testemunhar esta nova aliança firmada em Deus. Agradecemos a consideração e a oportunidade de nos alegrarmos convosco. Já estamos ansiosos pelos detalhes!`;
+            
+            // Usando link genérico que abre o app para escolher o contato
+            const link = `https://wa.me/?text=${mensagem}`;
+            
+            document.getElementById('whatsappLink').setAttribute('href', link);
+        });
+    </script>
+</body>
+</html>
